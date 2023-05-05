@@ -1,0 +1,23 @@
+#!/app/anaconda3/bin/python
+
+import pandas as pd
+import glob
+import os
+
+# Lee todos los archivos CSV en una lista de data frames
+dfs = [pd.read_csv(filename) for filename in glob.glob('/projects/aluckie/count_files/pre_db/*_counts')]
+
+# Concatena los data frames en uno solo
+df = pd.concat(dfs, axis=1)
+
+# Convierte los valores a tipo numérico
+df = df.apply(pd.to_numeric, errors='coerce')
+
+# Rellena los valores faltantes con ceros
+df = df.fillna(0)
+
+# Convierte a entero
+df = df.astype(float)
+
+# Guarda el resultado en un archivo CSV
+df.to_csv('current_alldb.csv', index=False)
