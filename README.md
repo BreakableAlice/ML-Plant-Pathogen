@@ -6,3 +6,5 @@ There are two basic data files needed for appyling this ML pipeline: a meta-data
 3) Give format. 
 4) Join data.
 5) Apply PCA and biplot algorithms. 
+
+Issues with the functioning of the scripts can be personally disscused with the author. Please feel free to comment or suggest any improval. 
