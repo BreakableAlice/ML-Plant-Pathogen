@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Script for running Salmon troughout all valid files in a directory. Created by Luckie-Duque C. Alicia 01-18-23
+
+
+for FILE in *;
+do
+samp=`basename ${FILE} .fastq`
+echo "Processing sample ${FILE}"
+echo "$samp"
+type="[\_[1-2]+\.]"
+sgl="[{sample}.fastq]"
+
+        if [[ $FILE =~ \_[1]+\. ]]; then
+                echo "Paired"
+                prefix=`basename ${FILE} _1.fastq`
+                salmon quant -i athal_index -l A -1 ${prefix}_1.fastq -2 ${prefix}_2.fastq -p 8 --validateMappings -o ${prefix}_quant
+        elif [[ $FILE =~ \_[2]+\. ]]; then
+                echo "Doubled from paired"
+        elif [[ $FILE =~ [A-Z]+[0-9]+\. ]]; then
+                echo "Single"
+                salmon quant -i athal_index -l A -r ${samp}.fastq -p 8 --validateMappings -o ${samp}_quant
+        else
+                echo "File"
+        fi
+
+done
