@@ -1,0 +1,46 @@
+#!/app/anaconda3/bin/python
+
+#pip install pca
+from pca import pca
+
+model = pca(n_components=2)
+
+import pandas as pd
+import sklearn
+import numpy as np
+
+counts = pd.read_csv('test_alldb.csv')
+#MOD
+genes = pd.read_csv('sample', sep='\t')
+gene_list = genes.iloc[:,0]
+counts.set_index(gene_list, inplace=True)
+#MOD
+counts_t = counts.transpose()
+samples = counts_t.index
+for c in counts_t.columns:
+        counts_t[c] += 1
+for c in counts_t.columns:
+        counts_t[c] = np.log(counts_t[c])
+
+results = model.fit_transform(counts_t)
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+fig, ax = model.plot()
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('model.png')
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+fig, ax = model.scatter()
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('scatter_biplot.png')
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+fig, ax = model.biplot(n_feat=20)
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('biplot_stack.png')
