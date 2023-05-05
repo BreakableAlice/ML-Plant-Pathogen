@@ -1,0 +1,113 @@
+#!/app/anaconda3/bin/python
+
+import numpy as np
+import pandas as pd
+
+counts = pd.read_csv('test_alldb.csv')
+counts = counts.astype('float')
+print(counts.head())
+print(counts.shape)
+
+counts_t = counts.transpose()
+print('Transposed')
+print(counts_t.shape)
+print(counts_t.head())
+
+for c in counts_t.columns:
+        counts_t[c] += 1
+print('Eliminating zeros')
+
+for c in counts_t.columns:
+        counts_t[c] = np.log(counts_t[c])
+print('Log transform')
+
+#counts_t2 = counts_t.transpose()
+#print('Reshape')
+#print(counts_t2.head())
+#print(counts_t2.shape)
+
+from sklearn.decomposition import PCA
+
+pca = PCA(n_components=2)
+
+real_PCs = pca.fit_transform(counts_t)
+print('Fit transform')
+real_PCs_df = pd.DataFrame(data = real_PCs, columns = ['PC1', 'PC2'])
+print(real_PCs_df.head())
+print(real_PCs_df.shape)
+
+variance = pca.explained_variance_ratio_
+print(variance)
+
+sample_annot = pd.read_csv('full_meta.csv')
+sample_annot = sample_annot[['Sample Accession', 'Pathogen', 'Organism', 'Habit', 'Ctrl0_Test1', 'Time(hrs)', 'Effector', 'Mutants', 'Tissue']]
+final_real_df = pd.concat([sample_annot, real_PCs_df], axis=1)
+print(final_real_df.head())
+print(final_real_df.shape)
+with open("final.csv", "w") as output:
+        output.write(str(final_real_df))
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+sns.scatterplot(x='PC1', y='PC2', data=final_real_df, legend="full")
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('PCA.png')
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+sns.scatterplot(x='PC1', y='PC2', data=final_real_df, legend="full")
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('PCA.png')
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+sns.scatterplot(x='PC1', y='PC2', data=final_real_df, hue='Pathogen', legend="full")
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('PCA_path.png')
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+sns.scatterplot(x='PC1', y='PC2', data=final_real_df, hue='Organism', legend="full")
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('PCA_species.png')
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+sns.scatterplot(x='PC1', y='PC2', data=final_real_df, hue='Habit', legend="full")
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('PCA_habit.png')
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+sns.scatterplot(x='PC1', y='PC2', data=final_real_df, hue='Effector', legend="full")
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('PCA_effector.png')
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+sns.scatterplot(x='PC1', y='PC2', data=final_real_df, hue='Ctrl0_Test1', legend="full")
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('PCA_control.png')
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+sns.scatterplot(x='PC1', y='PC2', data=final_real_df, hue='Tissue', legend="full")
+plt.legend(loc='center left', bbox_to_anchor=(0.8, 0.5))
+plt.savefig('PCA_tissue.png')
+
