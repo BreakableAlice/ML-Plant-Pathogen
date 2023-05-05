@@ -1,0 +1,16 @@
+#!/bin/bash
+
+for i in *_quant; #currently works with echo
+do
+        tag=`basename ${i} _quant`
+        existence=./${i}/quant.sf
+        echo "${existence}"
+        if [ -f "$existence" ];
+        then
+                sed -i "s/TPM*+/TPM_${tag}/g" ${i}/quant.sf
+                cp ${i}/quant.sf count_files/${tag}_counts
+#               cut -f1,4 ${i}/quant.sf >> db_draft
+        else
+                echo "${tag} was empty"
+        fi
+done
