@@ -1,0 +1,12 @@
+#!/usr/bin/bash
+
+#Script for cutting TPM and gene columns, plus tagging TPM.
+
+for i in *_counts;
+do
+tag=$(basename ${i} _counts)
+echo "${tag}"
+# head -3 | sed "s/TPM/TPM_${tag}/" works to check if it's right
+sed -i "s/TPM/TPM_${tag}/" ${i}
+cut -f1,4 $i > tpm_genes_$i
+done
